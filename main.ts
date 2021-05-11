@@ -1,3 +1,11 @@
+function lv1 () {
+    tiles.setTilemap(tilemap`level3`)
+    tiles.placeOnTile(play, tiles.getTileLocation(15, 19))
+}
+scene.onOverlapTile(SpriteKind.Projectile, sprites.dungeon.doorLockedSouth, function (sprite, location) {
+    music.thump.play()
+    tiles.setTilemap(tilemap`level3`)
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     play.setImage(img`
         . . . . . . . . . . . . . . . . 
@@ -17,6 +25,88 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         . e b b b b b b b b b b . . . . 
         . . b b b b b b b b b b . . . . 
         `)
+    facing = 3
+})
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (facing == 0) {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . 5 5 5 5 5 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, play, -100, 0)
+    } else if (facing == 1) {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, play, 0, 100)
+    } else if (facing == 2) {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 5 5 5 5 5 5 . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, play, 100, 0)
+    } else if (facing == 3) {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . 5 . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, play, 0, -100)
+    } else {
+    	
+    }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     play.setImage(img`
@@ -37,6 +127,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . e b b b b b b b . . . . 
         . . . . . b b b b b b b . . . . 
         `)
+    facing = 0
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile21`, function (sprite, location) {
     animation.runImageAnimation(
@@ -150,6 +241,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . b b b b b b b e . . . . 
         . . . . b b b b b b b . . . . . 
         `)
+    facing = 2
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     play.setImage(img`
@@ -170,36 +262,20 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         . e e e b b b b b b b b . . . . 
         . . b b b b b b b b b b . . . . 
         `)
+    facing = 1
 })
 function hallChase () {
+    onHall = true
     tiles.setTilemap(tilemap`level2`)
     tiles.placeOnTile(play, tiles.getTileLocation(3, 23))
-    if (play.y <= 64) {
-        game.splash("Stop!")
-        projectile = sprites.createProjectileFromSide(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . 5 . . . . . . . 
-            . . . . . . . . 5 . . . . . . . 
-            . . . . . . . . 5 . . . . . . . 
-            . . . . . . . . 4 . . . . . . . 
-            . . . . . . . . 4 . . . . . . . 
-            . . . . . . . . 4 . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, 50, 50)
-    }
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenNorth, function (sprite, location) {
     hallChase()
 })
+let chaseBoy: Sprite = null
+let onHall = false
 let projectile: Sprite = null
+let facing = 0
 let play: Sprite = null
 play = sprites.create(img`
     ........................
@@ -256,3 +332,33 @@ pause(1000)
 mySprite.destroy()
 game.showLongText("I've been trailing him for weeks... It's time", DialogLayout.Bottom)
 controller.moveSprite(play, 70, 70)
+game.onUpdate(function () {
+    if (play.y <= 64) {
+        if (onHall == true) {
+            game.splash("Stop!")
+            onHall = false
+            chaseBoy = sprites.create(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . 2 2 2 2 2 2 2 2 2 2 2 . . 
+                . . . 2 b b b b b b b b b 2 . . 
+                . . . b 2 2 2 2 2 2 2 2 2 b . . 
+                . . . 2 b b b b b b b b b 2 . . 
+                . . . 2 2 2 2 2 2 2 2 2 2 2 . . 
+                . . . 2 2 2 2 2 2 2 2 2 2 2 . . 
+                . . . b b 2 2 2 2 2 2 2 b b . . 
+                . . . b b b b b b b b b b b . . 
+                . . . b b c b b b b b c b b . . 
+                . . . b b b c b b b c b b b . . 
+                . . . b b b c b b b c b b b . . 
+                . . . . . . . . . . . . . . . . 
+                `, SpriteKind.Player)
+            chaseBoy.setPosition(90, 103)
+            game.splash("You're Dead!")
+            scene.setBackgroundColor(15)
+            lv1()
+        }
+    }
+})
