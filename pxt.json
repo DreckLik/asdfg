@@ -2,7 +2,9 @@
     "name": "asdfg",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.1",
+        "pxt-sight": "github:felixtsu/pxt-sight#v0.0.3"
     },
     "files": [
         "main.blocks",
