@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const badProjectile = SpriteKind.create()
+}
 function lv1 () {
     on1 = true
     tiles.setTilemap(tilemap`level3`)
@@ -21,6 +24,28 @@ function lv1 () {
         . . . f 2 2 2 f . f 2 2 2 f . . 
         . . . f f f f f . f f f f f . . 
         `, SpriteKind.Enemy)
+    tiles.placeOnTile(badGuy, tiles.getTileLocation(30, 4))
+    list.push(badGuy)
+    badGuy2 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . f f . . . f f . . . . 
+        . . . . f 2 2 f f f 2 2 f . . . 
+        . . . . f 2 f 2 2 2 f 2 f . . . 
+        . . . . f 2 2 f 2 f 2 2 f . . . 
+        . . . . f 2 f 2 2 2 f 2 f . . . 
+        . . . . f 2 2 2 2 2 2 2 f . . . 
+        . . . . f 2 2 f f 2 2 2 f . . . 
+        . . . . f 2 f 2 2 f 2 2 f . . . 
+        . . . f f 2 2 c c c c c c c c . 
+        . . . f 2 e e e c e f e f e . . 
+        . . . f 2 2 e 2 2 2 2 2 2 f . . 
+        . . . f 2 2 2 2 f 2 2 2 2 f . . 
+        . . . f 2 2 2 f f f 2 2 2 f . . 
+        . . . f 2 2 2 f . f 2 2 2 f . . 
+        . . . f f f f f . f f f f f . . 
+        `, SpriteKind.Enemy)
+    tiles.placeOnTile(badGuy2, tiles.getTileLocation(4, 29))
+    list.push(badGuy2)
 }
 scene.onOverlapTile(SpriteKind.Projectile, sprites.dungeon.doorLockedSouth, function (sprite, location) {
     music.thump.play()
@@ -125,8 +150,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, play, 0, -200)
-    } else {
-    	
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -264,8 +287,9 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         `)
     facing = 2
 })
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
-    statusbar.value += 3
+sprites.onOverlap(SpriteKind.badProjectile, SpriteKind.Player, function (sprite, otherSprite) {
+    playStatus.value += -10
+    sprite.destroy()
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     play.setImage(img`
@@ -297,16 +321,29 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenNorth, function (
     hallChase()
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprite.destroy()
     otherSprite.destroy()
+    list.removeAt(list.indexOf(otherSprite))
+    if (otherSprite == badGuy) {
+        game.showLongText("You may have killed me, but you'll never get both keys!", DialogLayout.Bottom)
+    } else if (otherSprite == badGuy2) {
+        game.showLongText("Nooo!!!! my key!!!", DialogLayout.Bottom)
+        music.baDing.play()
+        hasKey = true
+        game.showLongText("No I can unlock the door and go upstairs again.", DialogLayout.Bottom)
+    }
 })
 let projectile2: Sprite = null
 let chaseBoy: Sprite = null
+let hasKey = false
 let onHall = false
 let projectile: Sprite = null
 let facing = 0
+let badGuy2: Sprite = null
+let list: Sprite[] = []
 let badGuy: Sprite = null
 let on1 = false
-let statusbar: StatusBarSprite = null
+let playStatus: StatusBarSprite = null
 let play: Sprite = null
 play = sprites.create(img`
     ........................
@@ -362,9 +399,10 @@ mySprite.setVelocity(0, -32)
 pause(1000)
 mySprite.destroy()
 game.showLongText("I've been trailing him for weeks... It's time", DialogLayout.Bottom)
-statusbar = statusbars.create(20, 4, StatusBarKind.Health)
-statusbar.attachToSprite(play)
-statusbar.setColor(7, 2)
+playStatus = statusbars.create(20, 4, StatusBarKind.Health)
+playStatus.value = 100
+playStatus.attachToSprite(play)
+playStatus.setColor(7, 2)
 controller.moveSprite(play, 70, 70)
 game.onUpdate(function () {
     if (play.y <= 64) {
@@ -388,41 +426,45 @@ game.onUpdate(function () {
                 . . . b b b c b b b c b b b . . 
                 . . . b b b c b b b c b b b . . 
                 . . . . . . . . . . . . . . . . 
-                `, SpriteKind.Player)
+                `, SpriteKind.Food)
             chaseBoy.setPosition(90, 103)
             game.splash("You're Dead!")
             scene.setBackgroundColor(15)
+            chaseBoy.destroy()
             lv1()
         }
     }
 })
-game.onUpdateInterval(randint(1000, 3000), function () {
-    if (on1 == true) {
-        if (sight.isInSight(
-        badGuy,
-        play,
-        64,
-        true
-        )) {
-            projectile2 = sprites.createProjectileFromSprite(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . 2 2 2 2 . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                `, badGuy, 0, 0)
-            projectile2.follow(play)
+game.onUpdateInterval(randint(500, 2000), function () {
+    for (let value of list) {
+        if (on1 == true) {
+            if (sight.isInSight(
+            value,
+            play,
+            128,
+            true
+            )) {
+                projectile2 = sprites.createProjectileFromSprite(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . 2 2 2 2 . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    `, value, 0, 0)
+                projectile2.setKind(SpriteKind.badProjectile)
+                projectile2.follow(play)
+            }
         }
     }
 })
