@@ -291,6 +291,13 @@ sprites.onOverlap(SpriteKind.badProjectile, SpriteKind.Player, function (sprite,
     playStatus.value += -10
     sprite.destroy()
 })
+function lv2 () {
+    onlv2 = true
+    on1 = false
+    tiles.setTilemap(tilemap`level9`)
+    tiles.placeOnTile(play, tiles.getTileLocation(7, 7))
+    controller.moveSprite(play, 70, 70)
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     play.setImage(img`
         . . . . . . . . . . . . . . . . 
@@ -333,10 +340,12 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
         game.showLongText("No I can unlock the door and go upstairs again.", DialogLayout.Bottom)
     }
 })
+let lv2Baddie: Sprite = null
 let projectile2: Sprite = null
 let chaseBoy: Sprite = null
 let hasKey = false
 let onHall = false
+let onlv2 = false
 let projectile: Sprite = null
 let facing = 0
 let badGuy2: Sprite = null
@@ -405,6 +414,11 @@ playStatus.attachToSprite(play)
 playStatus.setColor(7, 2)
 controller.moveSprite(play, 70, 70)
 game.onUpdate(function () {
+    if (hasKey == true) {
+        lv2()
+    }
+})
+game.onUpdate(function () {
     if (play.y <= 64) {
         if (onHall == true) {
             game.splash("Stop!")
@@ -441,7 +455,7 @@ game.onUpdateInterval(randint(500, 2000), function () {
             if (sight.isInSight(
             value,
             play,
-            128,
+            160,
             true
             )) {
                 projectile2 = sprites.createProjectileFromSprite(img`
@@ -466,5 +480,29 @@ game.onUpdateInterval(randint(500, 2000), function () {
                 projectile2.follow(play)
             }
         }
+    }
+})
+forever(function () {
+    if (onlv2 == true) {
+        pause(randint(3000, 7000))
+        lv2Baddie = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Enemy)
+        lv2Baddie.setPosition(play.x, play.y + 120)
     }
 })
